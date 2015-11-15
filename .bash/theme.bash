@@ -12,5 +12,8 @@ if command -v __git_ps1 > /dev/null 2>&1; then
   PS1+='\[$YELLOW\]$(__git_ps1 " (%s)")'
 fi
 
+# Show unstaged (*) and staged (+) changes 
+export GIT_PS1_SHOWDIRTYSTATE=1 
+
 # Normalize prompt contents
 PS1+='\[${NORMAL}\] $ '

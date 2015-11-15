@@ -2,7 +2,7 @@
 
 # Reads files in .bash/ 
 shopt -s nullglob
-for file in ~/.bash/.*.bash; do
+for file in ~/.bash/*.bash; do
   source $file
 done
 shopt -u nullglob

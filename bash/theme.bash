@@ -3,8 +3,8 @@
 # Start from scratch
 PS1=''
 
-# Put in current directory only
-PS1+='\[$BLUE\]\W'
+# Put in current directory and time only
+PS1+='\[$BLUE\]\T \W'
 
 # If we have __git_ps1 installed, then put it in the prompt. We do what we can
 # from the previous two lines.

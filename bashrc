@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Reads files in .bash/ 
+# Reads files in bash/ 
 shopt -s nullglob
 for file in ~/.bash/*.bash; do
   source $file

@@ -45,6 +45,12 @@ if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
   syntax on
 endif
 
+" Set colour scheme to Solarized Light
+syntax enable
+set t_Co=256
+set background=light
+colorscheme solarized
+
 if filereadable(expand("~/.vimrc.bundles"))
   source ~/.vimrc.bundles
 endif
@@ -175,8 +181,3 @@ set complete+=kspell
 
 " Always use vertical diffs
 set diffopt+=vertical
-
-" Local config
-if filereadable($HOME . "/.vimrc.local")
-  source ~/.vimrc.local
-endif

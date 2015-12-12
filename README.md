@@ -5,7 +5,7 @@
 ```
 git clone https://github.com/jonathanpike/dotfiles ~/.dotfiles
 cd ~/.dotfiles;
-./setup.sh;
+. setup.sh;
 ```
 
 Setup _should_ be idempotent, but I don't guarantee anything! 

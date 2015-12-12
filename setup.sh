@@ -14,16 +14,19 @@ if [[ ! -e ~/.dotfiles_backup ]]; then
     mkdir ~/.dotfiles_backup
 fi
 
+echo "Welcome to your computer.  We're going to automatically set it up for you."
+echo
+
 ###############################################
 # Git and Github
 ###############################################
 
 # Set up Git
 echo "We're going to set up your Git user name and e-mail"
-echo
+
 echo "What name do you want to use for Git?"
 read git_name
-echo
+
 echo "What e-mail do you want to use for Git?"
 read git_email
 
@@ -85,6 +88,9 @@ sudo -v
 
 # Keep-alive: update existing sudo time stamp until the script has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+# Fix ownership of /usr/local on El Cap
+sudo chown -R $(whoami):admin /usr/local
 
 # Check if Homebrew is installed
 

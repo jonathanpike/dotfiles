@@ -25,7 +25,7 @@ echo "What name do you want to use for Git?"
 read git_name
 echo
 echo "What e-mail do you want to use for Git?"
-readh git_email
+read git_email
 
 running "Setting up Git..."
 git config --global user.name $git_name
@@ -33,23 +33,30 @@ git config --global user.email $git_email
 git config --global core.editor vim;ok
 
 # Set up Github
-
-if [[ ! -e ~/.ssh/id_rsa ]]; then
-	running "Generating new SSH key for GitHub"
-	# Generate new SSH Key and save in default file
-	echo | ssh-keygen -t rsa -b 4096 -C $git_email
-	eval "$(ssh-agent -s)"
-	ssh-add ~/.ssh/id_rsa
-	bundle install > /dev/null
-	ruby github-key.rb 
-	ok
-else 
-	running "Using SSH Key <id_rsa> for Github"
-	eval "$(ssh-agent -s)"
-	ssh-add ~/.ssh/id_rsa
-	bundle install > /dev/null
-	ruby github-key.rb 
-	ok
+echo "We can add an SSH key to your GitHub, if you want."
+read -r -p "add SSH key? [y|N] " response
+if [[ $response =~ ^(y|yes|Y) ]];then
+	if [[ ! -e ~/.ssh/id_rsa ]]; then
+		running "Generating new SSH key for GitHub"
+		# Generate new SSH Key and save in default file
+		echo | ssh-keygen -t rsa -b 4096 -C $git_email
+		eval "$(ssh-agent -s)"
+		ssh-add ~/.ssh/id_rsa
+		gem install bundler > /dev/null
+		bundle install > /dev/null
+		ruby github-key.rb 
+		ok
+	else 
+		running "Using SSH Key <id_rsa> for Github"
+		eval "$(ssh-agent -s)"
+		ssh-add ~/.ssh/id_rsa
+		gem install bundler > /dev/null
+		bundle install > /dev/null
+		ruby github-key.rb 
+		ok
+	fi
+else
+	ok "skipped adding SSH key to GitHub";
 fi
 
 
@@ -72,6 +79,12 @@ popd > /dev/null 2>&1
 ###############################################
 # Homebrew 
 ###############################################
+
+echo "Enter your sudo password to proceed with installation:"
+sudo -v
+
+# Keep-alive: update existing sudo time stamp until the script has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # Check if Homebrew is installed
 

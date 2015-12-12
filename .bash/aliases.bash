@@ -20,6 +20,11 @@ alias j="jobs"
 # Blog Shortcuts
 alias js="bundle exec jekyll serve"
 
+# Git Shortcuts
+alias gs="git status"
+alias gc="git commit"
+alias ga="git add"
+
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
 	colorflag="--color"

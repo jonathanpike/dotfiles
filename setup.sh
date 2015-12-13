@@ -22,18 +22,20 @@ echo
 ###############################################
 
 # Set up Git
-echo "We're going to set up your Git user name and e-mail"
+if [[ ! -e ~/.gitconfig ]]; then
+	echo "We're going to set up your Git user name and e-mail."
 
-echo "What name do you want to use for Git?"
-read git_name
+	echo "What name do you want to use for Git?"
+	read git_name
 
-echo "What e-mail do you want to use for Git?"
-read git_email
+	echo "What e-mail do you want to use for Git?"
+	read git_email
 
-running "Setting up Git..."
-git config --global user.name $git_name
-git config --global user.email $git_email
-git config --global core.editor vim;ok
+	running "Setting up Git..."
+	git config --global user.name $git_name
+	git config --global user.email $git_email
+	git config --global core.editor vim;ok
+fi
 
 # Set up Github
 echo "We can add an SSH key to your GitHub, if you want."
@@ -61,7 +63,6 @@ if [[ $response =~ ^(y|yes|Y) ]];then
 else
 	ok "skipped adding SSH key to GitHub";
 fi
-
 
 ###############################################
 # Dotfiles
@@ -93,7 +94,6 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 sudo chown -R $(whoami):admin /usr/local
 
 # Check if Homebrew is installed
-
 running "Checking homebrew install"
 brew_bin=$(which brew) 2>&1 > /dev/null
 if [[ $? != 0 ]]; then
@@ -106,13 +106,13 @@ if [[ $? != 0 ]]; then
 fi
 ok
 
-running "Checking brew-cask install"
-output=$(brew tap | grep cask)
-if [[ $? != 0 ]]; then
-	action "installing brew-cask"
-	require_brew caskroom/cask/brew-cask
-fi
-ok
+# running "Checking brew-cask install"
+# output=$(brew tap | grep cask)
+# if [[ $? != 0 ]]; then
+# 	action "installing brew-cask"
+# 	require_brew caskroom/cask/brew-cask
+# fi
+# ok
 
 # Make sure we’re using the latest Homebrew
 running "Updating homebrew"

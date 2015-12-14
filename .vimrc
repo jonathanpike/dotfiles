@@ -11,6 +11,9 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'rking/ag.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'mileszs/ack.vim'
+Plugin 'bling/vim-airline'
+Plugin 'tpope/vim-fugitive'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -38,6 +41,9 @@ set showcmd       " display incomplete commands
 set incsearch     " do incremental searching
 set laststatus=2  " Always display the status line
 set autowrite     " Automatically :write before running commands
+set scrolloff=2
+set autoindent
+set relativenumber
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -50,6 +56,9 @@ syntax enable
 set t_Co=256
 set background=light
 colorscheme solarized
+
+set guifont=Inconsolata\ For\ Powerline:h15
+let g:airline_powerline_fonts = 1
 
 if filereadable(expand("~/.vimrc.bundles"))
   source ~/.vimrc.bundles
@@ -115,7 +124,7 @@ endif
 
 " Make it obvious where 80 characters is
 set textwidth=80
-set colorcolumn=+10
+set colorcolumn=+1
 
 " Numbers
 set number

@@ -146,6 +146,7 @@ require_cask dropbox
 require_cask flux
 require_cask google-chrome
 require_cask iterm2
+require_cask postgres
 
 ###############################################
 # rbenv

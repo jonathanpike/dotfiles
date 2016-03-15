@@ -87,7 +87,6 @@ popd > /dev/null 2>&1
 if [[ get_os =~ osx ]]; then 
 	action "Setting up OS X system"
 	source ./brew.sh
-	source ./osx.sh
 else
 	action "Setting up Linux system"
 	source ./apt.sh

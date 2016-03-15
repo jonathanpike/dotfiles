@@ -1,5 +1,0 @@
-# ruby gem nightly updates
-0 2 * * *  gem update -V
-# brew nightly updates
-0 3 * * *  brew update
-0 4 * * *  brew upgrade

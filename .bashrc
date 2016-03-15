@@ -11,8 +11,8 @@ shopt -u nullglob
 shopt -s nocaseglob;
 
 # Bash Completion
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-. $(brew --prefix)/etc/bash_completion
+if [ -f /usr/local/etc/bash_completion ]; then
+. /usr/local/etc/bash_completion
 fi
 
 # Enable shims and autocompletion for rbenv

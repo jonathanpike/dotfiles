@@ -17,7 +17,7 @@ COL_MAGENTA=$ESC_SEQ"35;01m"
 COL_CYAN=$ESC_SEQ"36;01m"
 
 function ok() {
-    echo -e "$COL_GREEN[ok]$COL_RESET "$1
+    echo -e "$COL_GREEN[✔ ok]$COL_RESET "$1
 }
 
 function running() {
@@ -25,7 +25,7 @@ function running() {
 }
 
 function action() {
-    echo -e "\n$COL_YELLOW[action]:$COL_RESET\n ⇒ $1..."
+    echo -e "\n$COL_YELLOW[➜ action]:$COL_RESET\n ⇒ $1..."
 }
 
 function warn() {
@@ -33,7 +33,7 @@ function warn() {
 }
 
 function error() {
-    echo -e "$COL_RED[error]$COL_RESET "$1
+    echo -e "$COL_RED[✖ error]$COL_RESET "$1
 }
 
 function require_cask() {
@@ -74,6 +74,19 @@ function require_node(){
     ok
 }
 
+function require_apt(){
+  running "apt-get $1"
+  dpkg --get-selections | grep $1 | true
+  if [[ ${PIPESTATUS[0]} != 0 ]]; then
+    action "apt-get install -y $1"
+    apt-get install $1 
+    if [[ $? != 0 ]]; then
+      error "failed to install $1! aborting..."
+    fi
+  fi
+  ok
+}
+
 function require_gem() {
     running "gem $1"
     if [[ $(gem list --local | grep $1 | head -1 | cut -d' ' -f1) != $1 ]];
@@ -103,4 +116,19 @@ function symlinkifne {
     # create the link
     ln -s ~/.dotfiles/$1 $1
     echo -en '\tlinked';ok
+}
+
+# OS detection
+function is_osx() {
+  [[ "$OSTYPE" =~ ^darwin ]] || return 1
+}
+
+function is_ubuntu() {
+  [[ "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]] || return 1
+}
+
+function get_os() {
+  for os in osx ubuntu; do
+    is_$os; [[ $? == ${1:-0} ]] && echo $os
+  done
 }

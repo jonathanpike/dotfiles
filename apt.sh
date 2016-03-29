@@ -32,6 +32,7 @@ packages=(
     wget
     silversearcher-ag
     vim
+    openssl 
 )
 
 for package in "${packages[@]}"; do

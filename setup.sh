@@ -81,6 +81,15 @@ symlinkifne .vim
 popd > /dev/null 2>&1
 
 ###############################################
+# Vim Plugins
+###############################################
+
+echo "Installing Vim plugins..."
+
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+vim +PluginInstall +qall
+
+###############################################
 # OS Detection and Package Install
 ###############################################
 

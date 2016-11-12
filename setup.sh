@@ -77,6 +77,7 @@ symlinkifne .bash_profile
 symlinkifne .bash
 symlinkifne .vimrc
 symlinkifne .vim
+symlinkifne .tmux.conf
 
 popd > /dev/null 2>&1
 

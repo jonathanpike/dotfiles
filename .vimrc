@@ -57,7 +57,7 @@ set t_Co=256
 set background=light
 colorscheme solarized
 
-set guifont=Inconsolata\ For\ Powerline:h15
+set guifont=Hack:h15
 let g:airline_powerline_fonts = 1
 
 if filereadable(expand("~/.vimrc.bundles"))

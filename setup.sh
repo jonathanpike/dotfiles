@@ -94,24 +94,35 @@ vim +PluginInstall +qall
 # OS Detection and Package Install
 ###############################################
 
-if [[ get_os =~ osx ]]; then 
-	action "Setting up OS X system"
-	source ./brew.sh
+echo "We can install OS packages to enhance your system, if you want."
+
+read -r -p "install OS packages? [y|N] " response
+if [[ $response =~ ^(y|yes|Y) ]]; then
+  PACKAGES=true
+  if [[ get_os =~ osx ]]; then 
+  	action "Setting up OS X system"
+  	source ./brew.sh
+  else
+  	action "Setting up Linux system"
+  	source ./apt.sh
+  fi
 else
-	action "Setting up Linux system"
-	source ./apt.sh
-fi 
+  PACKAGES=false
+  ok "skipped OS package install"
+fi
 
 ###############################################
 # rbenv
 ###############################################
 
-running "Installing latest Ruby with rbenv"
-rbenv install 2.3.0
-rbenv global 2.3.0
-gem install bundler
-rbenv rehash
-ok "Done installing latest Ruby with rbenv"
+if [[ $PACKAGES = true ]]; then
+  running "Installing latest Ruby with rbenv"
+  rbenv install 2.3.0
+  rbenv global 2.3.0
+  gem install bundler
+  rbenv rehash
+  ok "Done installing latest Ruby with rbenv"
+fi
 
 echo
 echo "Your computer is all set up!  Enjoy!"

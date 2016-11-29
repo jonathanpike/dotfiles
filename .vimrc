@@ -60,6 +60,7 @@ colorscheme solarized
 
 set guifont=Hack:h15
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#obsession#enabled = 1
 
 if filereadable(expand("~/.vimrc.bundles"))
   source ~/.vimrc.bundles

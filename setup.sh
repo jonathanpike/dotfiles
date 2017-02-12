@@ -91,6 +91,16 @@ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 vim +PluginInstall +qall
 ok
 
+
+###############################################
+# Tmux Plugins
+###############################################
+
+echo "Installing Tmux Plugin Manager..."
+
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+ok
+
 ###############################################
 # OS Detection and Package Install
 ###############################################

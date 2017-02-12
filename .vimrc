@@ -14,6 +14,8 @@ Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'mileszs/ack.vim'
 Plugin 'bling/vim-airline'
 Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-obsession'
+Plugin 'kchmck/vim-coffee-script'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -59,6 +61,7 @@ colorscheme solarized
 
 set guifont=Hack:h15
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#obsession#enabled = 1
 
 if filereadable(expand("~/.vimrc.bundles"))
   source ~/.vimrc.bundles

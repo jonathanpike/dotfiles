@@ -24,7 +24,7 @@ alias js="bundle exec jekyll serve"
 alias gs="git status"
 alias gc="git commit"
 alias ga="git add"
-alias git lg="git log --decorate --graph -p"
+alias glg="git log --decorate --graph -p"
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`

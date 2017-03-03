@@ -46,6 +46,7 @@ set autowrite     " Automatically :write before running commands
 set scrolloff=2
 set autoindent
 set relativenumber
+set pastetoggle=<F3> " Enable paste mode with a keystroke to avoid auto-indent
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.

@@ -78,6 +78,7 @@ symlinkifne .bash
 symlinkifne .vimrc
 symlinkifne .vim
 symlinkifne .tmux.conf
+symlinkifne .psqlrc
 
 popd > /dev/null 2>&1
 

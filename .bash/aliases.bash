@@ -26,6 +26,8 @@ alias gc="git commit"
 alias ga="git add"
 alias glg="git log --decorate --graph -p"
 
+alias dbundle='BUNDLE_TRAMPOLINE_DISABLE=1 ruby -I ~/Code/Ruby/bundler/lib ~/Code/Ruby/bundler/exe/bundle'
+
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
 	colorflag="--color"

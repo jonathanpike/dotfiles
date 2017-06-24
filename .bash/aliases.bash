@@ -24,6 +24,8 @@ alias js="bundle exec jekyll serve"
 alias gs="git status"
 alias gc="git commit"
 alias ga="git add"
+alias gd="git diff"
+alias gl="git log"
 alias glg="git log --decorate --graph -p"
 
 # Ruby Shortcuts

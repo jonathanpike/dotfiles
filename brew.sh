@@ -50,23 +50,35 @@ else
     ok "skipped brew package upgrades."
 fi
 
+packages=(
+    ack
+    bash-completion
+    ctags
+    git 
+    rbenv
+    reattach-to-user-namespace
+    the_silver_searcher
+    tmux
+    vim
+)
+
 echo "Installing homebrew command-line tools"
-require_brew ack
-require_brew bash-completion
-require_brew git
-require_brew hub
-require_brew node
-require_brew rbenv
-require_brew the_silver_searcher
-require_brew vim
+for package in "${packages[@]}"; do
+    require_brew "$package" 
+done
+
+casks=(
+    1password
+    dropbox
+    flux
+    iterm2
+    postgres
+)
 
 echo "Installing homebrew gui tools"
-require_cask 1password
-require_cask dropbox
-require_cask flux
-require_cask google-chrome
-require_cask iterm2
-require_cask postgres
+for cask in "${casks[@]}"; do
+    require_cask "$cask" 
+done
 
 ###############################################
 # iTerm

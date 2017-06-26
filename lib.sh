@@ -64,29 +64,6 @@ function require_brew() {
     ok
 }
 
-function require_node(){
-    running "node -v"
-    node -v
-    if [[ $? != 0 ]]; then
-        action "node not found, installing via homebrew"
-        brew install node
-    fi
-    ok
-}
-
-function require_apt(){
-  running "apt-get $1"
-  dpkg --get-selections | grep $1 | true
-  if [[ ${PIPESTATUS[0]} != 0 ]]; then
-    action "apt-get install -y $1"
-    apt-get install $1 
-    if [[ $? != 0 ]]; then
-      error "failed to install $1! aborting..."
-    fi
-  fi
-  ok
-}
-
 function require_gem() {
     running "gem $1"
     if [[ $(gem list --local | grep $1 | head -1 | cut -d' ' -f1) != $1 ]];
@@ -118,17 +95,3 @@ function symlinkifne {
     echo -en '\tlinked';ok
 }
 
-# OS detection
-function is_osx() {
-  [[ "$OSTYPE" =~ ^darwin ]] || return 1
-}
-
-function is_ubuntu() {
-  [[ "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]] || return 1
-}
-
-function get_os() {
-  for os in osx ubuntu; do
-    is_$os; [[ $? == ${1:-0} ]] && echo $os
-  done
-}

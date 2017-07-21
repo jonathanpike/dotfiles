@@ -131,6 +131,9 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 endif
 
+" Ignore files in .gitignore
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+
 " Make it obvious where 80 characters is
 set colorcolumn=81
 

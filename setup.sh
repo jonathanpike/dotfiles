@@ -35,6 +35,7 @@ if [[ ! -e ~/.gitconfig ]]; then
   git config --global user.name $git_name
   git config --global user.email $git_email
   git config --global core.editor vim;ok
+  # thanks to Tim Pope for this (http://tbaggery.com/2011/08/08/effortless-ctags-with-git.html)
   git config --global init.templatedir '~/.git_template'
   git config --global alias.ctags '!.git/hooks/ctags'
 fi

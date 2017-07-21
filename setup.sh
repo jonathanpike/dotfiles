@@ -35,6 +35,8 @@ if [[ ! -e ~/.gitconfig ]]; then
   git config --global user.name $git_name
   git config --global user.email $git_email
   git config --global core.editor vim;ok
+  git config --global init.templatedir '~/.git_template'
+  git config --global alias.ctags '!.git/hooks/ctags'
 fi
 
 # Set up Github
@@ -79,6 +81,7 @@ symlinkifne .vimrc
 symlinkifne .vim
 symlinkifne .tmux.conf
 symlinkifne .psqlrc
+symlinkifne .git_template
 
 popd > /dev/null 2>&1
 

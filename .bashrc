@@ -23,5 +23,7 @@ if [ -f /usr/local/etc/bash_completion ]; then
   __git_complete gl _git_log
 fi
 
+ssh-add -A > /dev/null 2>&1
+
 # Enable shims and autocompletion for rbenv
 eval "$(rbenv init -)"

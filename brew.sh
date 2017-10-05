@@ -54,30 +54,15 @@ packages=(
     ack
     bash-completion
     ctags
-    git 
+    git
     rbenv
-    reattach-to-user-namespace
     the_silver_searcher
-    tmux
     vim
 )
 
 echo "Installing homebrew command-line tools"
 for package in "${packages[@]}"; do
     require_brew "$package" 
-done
-
-casks=(
-    1password
-    dropbox
-    flux
-    iterm2
-    postgres
-)
-
-echo "Installing homebrew gui tools"
-for cask in "${casks[@]}"; do
-    require_cask "$cask" 
 done
 
 ###############################################

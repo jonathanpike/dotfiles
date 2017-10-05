@@ -65,7 +65,7 @@ set t_Co=256
 set background=light
 colorscheme solarized
 
-set guifont=Hack:h15
+set guifont=Hack:h13
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#obsession#enabled = 1
 

@@ -9,9 +9,8 @@ call vundle#begin()
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'rking/ag.vim'
-Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'mileszs/ack.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'bling/vim-airline'
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'fatih/vim-go'
@@ -21,6 +20,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-obsession'
 Plugin 'tpope/vim-dispatch'
 Plugin 'Yggdroot/indentLine'
+Plugin 'godlygeek/tabular'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -129,6 +129,9 @@ if executable('ag')
 
   " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
+
+  " Use ag for ack.vim
+  let g:ackprg = 'ag --vimgrep'
 endif
 
 " Ignore files in .gitignore
@@ -170,6 +173,20 @@ nnoremap <Leader>r :RunInInteractiveShell<space>
 
 " Insert current date and time
 nnoremap <Leader>d "=strftime("%F %T")<CR>P
+
+" Line up variable assignments (=) and hashes (:, =>)
+if exists(":Tabularize")
+  nmap <Leader>a= :Tabularize /=<CR>
+  vmap <Leader>a= :Tabularize /=<CR>
+  nmap <Leader>a: :Tabularize /:\zs<CR>
+  vmap <Leader>a: :Tabularize /:\zs<CR>
+  nmap <Leader>a> :Tabularize /=>\zs<CR>
+  vmap <Leader>a> :Tabularize /=>\zs<CR>
+endif
+
+" Quicker search.  Bang prevents first result from opening
+" automatically.
+nnoremap <Leader>a :Ack!<Space>
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'

@@ -12,15 +12,19 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'mileszs/ack.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'bling/vim-airline'
-Plugin 'kchmck/vim-coffee-script'
 Plugin 'fatih/vim-go'
 Plugin 'tpope/vim-eunuch'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-obsession'
 Plugin 'tpope/vim-dispatch'
+Plugin 'tpope/vim-bundler'
 Plugin 'Yggdroot/indentLine'
 Plugin 'godlygeek/tabular'
+Plugin 'sheerun/vim-polyglot'
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-session'
+Plugin 'Quramy/tsuquyomi'
+Plugin 'leafgarland/typescript-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -68,15 +72,6 @@ colorscheme solarized
 set guifont=Hack:h13
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#obsession#enabled = 1
-
-if filereadable(expand("~/.vimrc.bundles"))
-  source ~/.vimrc.bundles
-endif
-
-" Load matchit.vim, but only if the user hasn't installed a newer version.
-if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
-  runtime! macros/matchit.vim
-endif
 
 filetype plugin indent on
 
@@ -162,15 +157,6 @@ inoremap <S-Tab> <c-n>
 " Switch between the last two files
 nnoremap <leader><leader> <c-^>
 
-" Get off my lawn
-nnoremap <Left> :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
-nnoremap <Up> :echoe "Use k"<CR>
-nnoremap <Down> :echoe "Use j"<CR>
-
-" Run commands that require an interactive shell
-nnoremap <Leader>r :RunInInteractiveShell<space>
-
 " Insert current date and time
 nnoremap <Leader>d "=strftime("%F %T")<CR>P
 
@@ -186,7 +172,7 @@ endif
 
 " Quicker search.  Bang prevents first result from opening
 " automatically.
-nnoremap <Leader>a :Ack!<Space>
+nnoremap <Leader>s :Ack!<Space>
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
@@ -200,12 +186,6 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
-
-" configure syntastic syntax checking to check on open as well as save
-let g:syntastic_check_on_open=1
-let g:syntastic_html_tidy_ignore_errors=[" proprietary attribute \"ng-"]
-let g:syntastic_eruby_ruby_quiet_messages =
-    \ {"regex": "possibly useless use of a variable in void context"}
 
 " Set spellfile to location that is guaranteed to exist, can be symlinked to
 " Dropbox or kept in Git and managed outside of thoughtbot/dotfiles using rcm.

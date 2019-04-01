@@ -28,6 +28,9 @@ alias gd="git diff"
 alias gl="git log"
 alias glg="git log --decorate --graph -p"
 
+# Windows WLS Shortcuts
+alias codedir="cd /mnt/c/Users/Jonathan\ Pike/code/"
+
 # Ruby Shortcuts
 alias dbundle='BUNDLE_TRAMPOLINE_DISABLE=1 ruby -I ~/Code/Ruby/bundler/lib ~/Code/Ruby/bundler/exe/bundle'
 alias bx='bundle exec'

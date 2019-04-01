@@ -54,10 +54,18 @@ packages=(
     ack
     bash-completion
     ctags
+    elasticsearch
+    imagemagick@6
     git
     rbenv
+    reattach-to-user-namespace
+    redis
+    ruby-completion
+    terminal-notifier
     the_silver_searcher
     vim
+    yarn
+    youtube-dl
 )
 
 echo "Installing homebrew command-line tools"

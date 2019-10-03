@@ -25,6 +25,8 @@ alias gs="git status"
 alias gc="git commit"
 alias ga="git add"
 alias gd="git diff"
+alias gp="git push"
+alias gst="git stash"
 alias gl="git log"
 alias glg="git log --decorate --graph -p"
 

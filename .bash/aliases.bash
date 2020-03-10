@@ -23,6 +23,7 @@ alias js="bundle exec jekyll serve"
 # Git Shortcuts
 alias gs="git status"
 alias gc="git commit"
+alias gch="git checkout"
 alias ga="git add"
 alias gd="git diff"
 alias gp="git push"

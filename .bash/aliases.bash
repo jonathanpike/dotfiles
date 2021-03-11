@@ -42,6 +42,9 @@ alias resetdb='bundle exec rake db:drop db:create db:migrate db:seed'
 # MacVim Shortcut
 alias mvim="/Applications/MacVim.app/Contents/bin/mvim"
 
+# PHP Shortcuts
+alias dx='docker exec -it app'
+
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
 	colorflag="--color"

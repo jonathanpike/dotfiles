@@ -10,9 +10,6 @@ alias ~="cd ~" # `cd` is probably faster to type though
 alias -- -="cd -"
 
 # Shortcuts
-alias d="cd ~/Documents/Dropbox"
-alias dl="cd ~/Downloads"
-alias dt="cd ~/Desktop"
 alias g="git"
 alias h="history"
 alias j="jobs"
@@ -31,8 +28,9 @@ alias gst="git stash"
 alias gl="git log"
 alias glg="git log --decorate --graph -p"
 
-# Windows WLS Shortcuts
-alias codedir="cd /mnt/c/Users/Jonathan\ Pike/code/"
+# RX Shortcuts
+alias rxt="rx dev task --"
+alias rxspec="rx dev task -- rspec"
 
 # Ruby Shortcuts
 alias dbundle='BUNDLE_TRAMPOLINE_DISABLE=1 ruby -I ~/Code/Ruby/bundler/lib ~/Code/Ruby/bundler/exe/bundle'

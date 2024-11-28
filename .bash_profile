@@ -7,3 +7,4 @@ if [ -f ~/.bashrc ]; then
 fi
 
 test -e ${HOME}/.iterm2_shell_integration.bash && source ${HOME}/.iterm2_shell_integration.bash
+test -f ~/.rx/shell_config && source ~/.rx/shell_config

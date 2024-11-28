@@ -11,8 +11,8 @@ shopt -u nullglob
 shopt -s nocaseglob;
 
 # Bash Completion
-if [ -f /usr/local/etc/bash_completion ]; then
-  . /usr/local/etc/bash_completion
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
 
   # Add git completion to aliases
   __git_complete g __git_main

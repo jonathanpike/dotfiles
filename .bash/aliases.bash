@@ -14,8 +14,8 @@ alias g="git"
 alias h="history"
 alias j="jobs"
 
-# Blog Shortcuts
-alias js="bundle exec jekyll serve"
+# Utilities
+alias nb="printf '\e[?2004l'"
 
 # Git Shortcuts
 alias gs="git status"
@@ -36,12 +36,6 @@ alias rxspec="rx dev task -- rspec"
 alias dbundle='BUNDLE_TRAMPOLINE_DISABLE=1 ruby -I ~/Code/Ruby/bundler/lib ~/Code/Ruby/bundler/exe/bundle'
 alias bx='bundle exec'
 alias resetdb='bundle exec rake db:drop db:create db:migrate db:seed'
-
-# MacVim Shortcut
-alias mvim="/Applications/MacVim.app/Contents/bin/mvim"
-
-# PHP Shortcuts
-alias dx='docker exec -it app'
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`

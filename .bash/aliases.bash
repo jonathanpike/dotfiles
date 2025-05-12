@@ -29,8 +29,8 @@ alias gl="git log"
 alias glg="git log --decorate --graph -p"
 
 # RX Shortcuts
-alias rxt="rx dev task --"
-alias rxspec="rx dev task -- bundle exec rspec"
+alias rxt="rx task --"
+alias rxspec="rx task -- bundle exec rspec"
 
 # Ruby Shortcuts
 alias dbundle='BUNDLE_TRAMPOLINE_DISABLE=1 ruby -I ~/Code/Ruby/bundler/lib ~/Code/Ruby/bundler/exe/bundle'

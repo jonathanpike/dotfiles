@@ -29,13 +29,11 @@ alias gl="git log"
 alias glg="git log --decorate --graph -p"
 
 # RX Shortcuts
-alias rxt="rx task --"
-alias rxspec="rx task -- bundle exec rspec"
+alias rxspec="rx task rspec"
 
 # Ruby Shortcuts
 alias dbundle='BUNDLE_TRAMPOLINE_DISABLE=1 ruby -I ~/Code/Ruby/bundler/lib ~/Code/Ruby/bundler/exe/bundle'
 alias bx='bundle exec'
-alias resetdb='bundle exec rake db:drop db:create db:migrate db:seed'
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`

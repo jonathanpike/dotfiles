@@ -6,6 +6,8 @@ PS1=''
 # Put in current directory and time only
 PS1+='\[$BLUE\]\T \u@\h: \w'
 
+[ -f "$HOMEBREW_PREFIX/etc/bash_completion.d/git-prompt.sh" ] && source "$HOMEBREW_PREFIX/etc/bash_completion.d/git-prompt.sh"
+
 # If we have __git_ps1 installed, then put it in the prompt. We do what we can
 # from the previous two lines.
 if command -v __git_ps1 > /dev/null 2>&1; then

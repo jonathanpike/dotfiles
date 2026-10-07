@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export PATH=/usr/local/bin:$PATH
-export PATH="$HOME/.rbenv/bin:$PATH"
-export PATH=$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin
-export GOPATH=$HOME/Code/Go
-export PATH=$PATH:$GOPATH/bin
+if [ -z "$HOMEBREW_PREFIX" ]; then
+  for brew in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+    [ -x "$brew" ] && eval "$("$brew" shellenv)" && break
+  done
+fi

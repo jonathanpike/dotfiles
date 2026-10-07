@@ -11,8 +11,8 @@ shopt -u nullglob
 shopt -s nocaseglob;
 
 # Bash Completion
-if [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
-  . /opt/homebrew/etc/profile.d/bash_completion.sh
+if [ -f "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]; then
+  . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
 
   # Add git completion to aliases
   __load_completion git

@@ -4,35 +4,17 @@
 # Homebrew 
 ###############################################
 
-echo "Enter your sudo password to proceed with installation:"
-sudo -v
-
-# Keep-alive: update existing sudo time stamp until the script has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
-# Fix ownership of /usr/local on El Cap
-sudo chown -R $(whoami):admin /usr/local
-
 # Check if Homebrew is installed
 running "Checking homebrew install"
-brew_bin=$(which brew) 2>&1 > /dev/null
-if [[ $? != 0 ]]; then
-	action "installing homebrew"
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    if [[ $? != 0 ]]; then
-    	error "unable to install homebrew, script $0 abort!"
-    	exit -1
-	fi
+if ! command -v brew > /dev/null 2>&1; then
+    action "installing homebrew"
+    if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+        error "unable to install homebrew, script $0 abort!"
+        exit 1
+    fi
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 ok
-
-# running "Checking brew-cask install"
-# output=$(brew tap | grep cask)
-# if [[ $? != 0 ]]; then
-# 	action "installing brew-cask"
-# 	require_brew caskroom/cask/brew-cask
-# fi
-# ok
 
 # Make sure we’re using the latest Homebrew
 running "Updating homebrew"
@@ -51,21 +33,12 @@ else
 fi
 
 packages=(
-    ack
-    bash-completion
-    ctags
-    elasticsearch
-    imagemagick@6
+    bash-completion@2
+    fzf
     git
     rbenv
-    reattach-to-user-namespace
-    redis
+    ripgrep
     ruby-completion
-    terminal-notifier
-    the_silver_searcher
-    vim
-    yarn
-    youtube-dl
 )
 
 echo "Installing homebrew command-line tools"

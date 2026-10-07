@@ -29,5 +29,7 @@ fi
 
 ssh-add --apple-load-keychain > /dev/null 2>&1
 
+command -v fzf > /dev/null && eval "$(fzf --bash)"
+
 # Enable shims and autocompletion for rbenv
 eval "$(rbenv init -)"

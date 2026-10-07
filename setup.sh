@@ -35,34 +35,21 @@ if [[ ! -e ~/.gitconfig ]]; then
   git config --global user.name $git_name
   git config --global user.email $git_email
   git config --global core.editor vim;ok
-  # thanks to Tim Pope for this (http://tbaggery.com/2011/08/08/effortless-ctags-with-git.html)
-  git config --global init.templatedir '~/.git_template'
-  git config --global alias.ctags '!.git/hooks/ctags'
 fi
 
 # Set up Github
 echo "We can add an SSH key to your GitHub, if you want."
 read -r -p "add SSH key? [y|N] " response
 if [[ $response =~ ^(y|yes|Y) ]]; then
-  if [[ ! -e ~/.ssh/id_rsa ]]; then
+  if [[ ! -e ~/.ssh/id_ed25519 ]]; then
     running "Generating new SSH key for GitHub"
-    # Generate new SSH Key and save in default file
-    echo | ssh-keygen -t rsa -b 4096 -C $git_email
-    eval "$(ssh-agent -s)"
-    ssh-add ~/.ssh/id_rsa
-    gem install bundler > /dev/null
-    bundle install > /dev/null
-    ruby github-key.rb 
-    ok
-  else 
-    running "Using SSH Key <id_rsa> for Github"
-    eval "$(ssh-agent -s)"
-    ssh-add ~/.ssh/id_rsa
-    gem install bundler > /dev/null
-    bundle install > /dev/null
-    ruby github-key.rb 
-    ok
+    ssh-keygen -t ed25519 -C "$(git config --global user.email)" -f ~/.ssh/id_ed25519
   fi
+  ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+  pbcopy < ~/.ssh/id_ed25519.pub
+  echo "Public key copied to clipboard. Add it at https://github.com/settings/ssh/new"
+  read -r -p "Press enter once the key is added to GitHub..."
+  ok
 else
   ok "skipped adding SSH key to GitHub";
 fi
@@ -80,9 +67,6 @@ symlinkifne .bash_profile
 symlinkifne .bash
 symlinkifne .vimrc
 symlinkifne .vim
-symlinkifne .tmux.conf
-symlinkifne .psqlrc
-symlinkifne .git_template
 
 popd > /dev/null 2>&1
 
@@ -96,16 +80,6 @@ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 vim +PluginInstall +qall
 ok
 
-
-###############################################
-# Tmux Plugins
-###############################################
-
-echo "Installing Tmux Plugin Manager..."
-
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-ok
-
 ###############################################
 # Package Install
 ###############################################
@@ -114,10 +88,8 @@ echo "We can install OS packages to enhance your system, if you want."
 
 read -r -p "install OS packages? [y|N] " response
 if [[ $response =~ ^(y|yes|Y) ]]; then
-  PACKAGES=true
   source ./brew.sh
 else
-  PACKAGES=false
   ok "skipped OS package install"
 fi
 

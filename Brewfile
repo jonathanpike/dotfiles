@@ -1,0 +1,13 @@
+brew "bash"
+brew "bash-completion@2"
+brew "bat"
+brew "fd"
+brew "fzf"
+brew "git"
+brew "git-delta"
+brew "rbenv"
+brew "ripgrep"
+brew "ruby-completion"
+
+cask "font-hack"
+cask "ghostty"

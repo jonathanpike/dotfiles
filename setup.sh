@@ -18,23 +18,40 @@ echo "Welcome to your computer.  We're going to automatically set it up for you.
 echo
 
 ###############################################
+# Homebrew
+###############################################
+
+running "Checking homebrew install"
+if ! command -v brew > /dev/null 2>&1; then
+  action "installing homebrew"
+  if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+    error "unable to install homebrew, script $0 abort!"
+    exit 1
+  fi
+  for brew in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+    [[ -x $brew ]] && eval "$("$brew" shellenv)" && break
+  done
+fi
+ok
+
+running "Installing packages from Brewfile"
+brew bundle --file=./Brewfile;ok
+
+bash_path="$(brew --prefix)/bin/bash"
+if [[ $SHELL != "$bash_path" ]]; then
+  running "Setting login shell to $bash_path"
+  grep -qx "$bash_path" /etc/shells || echo "$bash_path" | sudo tee -a /etc/shells > /dev/null
+  chsh -s "$bash_path";ok
+fi
+
+###############################################
 # Git and Github
 ###############################################
 
-# Set up Git
-if [[ ! -e ~/.gitconfig ]]; then
-  echo "We're going to set up your Git user name and e-mail."
-
-  echo "What name do you want to use for Git?"
-  read git_name
-
-  echo "What e-mail do you want to use for Git?"
-  read git_email
-
-  running "Setting up Git..."
-  git config --global user.name $git_name
-  git config --global user.email $git_email
-  git config --global core.editor vim;ok
+if [[ ! -e ~/.gitconfig.local ]]; then
+  echo "What e-mail do you want to use for Git on this machine?"
+  read -r git_email
+  git config --file ~/.gitconfig.local user.email "$git_email"
 fi
 
 # Set up Github
@@ -43,7 +60,7 @@ read -r -p "add SSH key? [y|N] " response
 if [[ $response =~ ^(y|yes|Y) ]]; then
   if [[ ! -e ~/.ssh/id_ed25519 ]]; then
     running "Generating new SSH key for GitHub"
-    ssh-keygen -t ed25519 -C "$(git config --global user.email)" -f ~/.ssh/id_ed25519
+    ssh-keygen -t ed25519 -C "$(git config --file ~/.gitconfig.local user.email)" -f ~/.ssh/id_ed25519
   fi
   ssh-add --apple-use-keychain ~/.ssh/id_ed25519
   pbcopy < ~/.ssh/id_ed25519.pub
@@ -60,26 +77,16 @@ fi
 
 echo "Creating symlinks for dotfiles..."
 
+mkdir -p ~/.config
 pushd ~ > /dev/null 2>&1
 
 symlinkifne .bashrc
 symlinkifne .bash_profile
 symlinkifne .bash
+symlinkifne .gitconfig
+symlinkifne .config/ghostty
 
 popd > /dev/null 2>&1
-
-###############################################
-# Package Install
-###############################################
-
-echo "We can install OS packages to enhance your system, if you want."
-
-read -r -p "install OS packages? [y|N] " response
-if [[ $response =~ ^(y|yes|Y) ]]; then
-  source ./brew.sh
-else
-  ok "skipped OS package install"
-fi
 
 echo
 echo "Your computer is all set up!  Enjoy!"

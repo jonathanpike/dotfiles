@@ -28,26 +28,8 @@ function action() {
     echo -e "\n$COL_YELLOW[➜ action]:$COL_RESET\n ⇒ $1..."
 }
 
-function warn() {
-    echo -e "$COL_YELLOW[warning]$COL_RESET "$1
-}
-
 function error() {
     echo -e "$COL_RED[✖ error]$COL_RESET "$1
-}
-
-function require_brew() {
-    running "brew $1 $2"
-    brew list $1 > /dev/null 2>&1 | true
-    if [[ ${PIPESTATUS[0]} != 0 ]]; then
-        action "brew install $1 $2"
-        brew install $1 $2
-        if [[ $? != 0 ]]; then
-            error "failed to install $1! aborting..."
-            # exit -1
-        fi
-    fi
-    ok
 }
 
 function symlinkifne {

@@ -11,10 +11,11 @@ shopt -u nullglob
 shopt -s nocaseglob;
 
 # Bash Completion
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
+if [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
+  . /opt/homebrew/etc/profile.d/bash_completion.sh
 
   # Add git completion to aliases
+  __load_completion git
   __git_complete g __git_main
   __git_complete gs _git_status
   __git_complete gc _git_commit

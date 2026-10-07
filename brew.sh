@@ -73,11 +73,4 @@ for package in "${packages[@]}"; do
     require_brew "$package" 
 done
 
-###############################################
-# iTerm
-###############################################
-
-running "Syncing iTerm2 Preferences"
-cp ./iterm/com.googlecode.iterm2.plist ~/Library/Preferences
-
 ok "Finished installing packages with Homebrew"

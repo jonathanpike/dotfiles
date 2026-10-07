@@ -5,3 +5,5 @@ if [ -z "$HOMEBREW_PREFIX" ]; then
     [ -x "$brew" ] && eval "$("$brew" shellenv)" && break
   done
 fi
+
+export PATH="$HOME/.dotfiles/bin:$PATH"

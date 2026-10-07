@@ -21,6 +21,7 @@ Setup _should_ be idempotent, but I don't guarantee anything!
 - `.ssh/config` -- shared SSH settings that store keys in the macOS Keychain
 - `.config/ghostty/config` -- Ghostty terminal config
 - `Brewfile` -- packages installed with `brew bundle`
+- `bin/drill` -- daily practice for the shell tools above; run `drill`, then `drill check`
 
 ## Machine-specific config
 

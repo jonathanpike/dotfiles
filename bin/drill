@@ -1,0 +1,414 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DRILL_HOME="$HOME/.cache/drill"
+SANDBOX="$DRILL_HOME/sandbox"
+REMOTE="$DRILL_HOME/remote.git"
+STATE="$HOME/.local/state/drill"
+DAYS_PER_STAGE=3
+
+BOLD=$'\e[1m'
+DIM=$'\e[2m'
+GREEN=$'\e[32m'
+RED=$'\e[31m'
+RESET=$'\e[0m'
+
+STAGES=("history" "search" "navigate" "git")
+STAGE_EXERCISES_history="history_recall history_prefix history_edit"
+STAGE_EXERCISES_search="search_definition search_count search_bat search_type"
+STAGE_EXERCISES_navigate="navigate_alt_c navigate_star_tab navigate_cdspell navigate_delta"
+STAGE_EXERCISES_git="git_push git_rebase git_branch_sort"
+
+habit_for_stage() {
+  case $1 in
+    history) echo "Every time you'd type 'history | grep' or retype a command, use Ctrl+R or ↑ instead." ;;
+    search) echo "Use rg instead of grep -r, and bat instead of cat, for everything today." ;;
+    navigate) echo "Use Alt+C or 'cd **<Tab>' instead of typing long paths or cd ../../.." ;;
+    git) echo "Push new branches with plain 'git push', and read diffs with n/N in delta." ;;
+  esac
+}
+
+exercise_text() {
+  case $1 in
+    history_recall) cat <<'EOF'
+Run 'rg -n TODO'. Then run 'cd app', and re-run the same rg command
+without retyping it: press Ctrl+R, type 'TODO', press Enter to put it
+on the command line, then Enter again to run it.
+EOF
+      ;;
+    history_prefix) cat <<'EOF'
+Run 'git log --oneline -5', then 'ls'. Now type just 'git l' and press ↑
+until the git log command comes back. Press Enter.
+EOF
+      ;;
+    history_edit) cat <<'EOF'
+Press Ctrl+R and find a command you ran earlier today in any repo.
+Press Enter to put it on the command line, change part of it, then run it.
+EOF
+      ;;
+    search_definition) cat <<'EOF'
+Which file defines the method 'calculate_tax'?
+Hint: rg 'def calculate_tax'
+EOF
+      ;;
+    search_count) cat <<'EOF'
+How many spec files mention 'refund'?
+Hint: rg -l refund spec | wc -l
+EOF
+      ;;
+    search_bat) cat <<'EOF'
+Open the invoice mailer with bat, inserting its path with Ctrl+T
+(type 'bat ', press Ctrl+T, type 'mailer'). On which line is
+'def deliver_late_notice'?
+EOF
+      ;;
+    search_type) cat <<'EOF'
+'legacy_rate' appears in Ruby and YAML files. Which YAML file contains it?
+Hint: rg -t yaml legacy_rate
+EOF
+      ;;
+    navigate_alt_c) cat <<'EOF'
+From the sandbox root, press Alt+C and fuzzy-find your way into the
+deepest folder under 'snapshots'. Run 'drill check' from there.
+EOF
+      ;;
+    navigate_star_tab) cat <<'EOF'
+From the sandbox root, type 'cd adapters**' and press Tab, pick the
+billing adapters folder, and press Enter twice. Run 'drill check' from there.
+EOF
+      ;;
+    navigate_cdspell) cat <<'EOF'
+From the sandbox root, run 'cd spec/fixtres' (note the typo) and let bash
+correct it. Run 'drill check' from there.
+EOF
+      ;;
+    navigate_delta) cat <<'EOF'
+Run 'git diff main feature/invoices' and press n / N to jump between files.
+Which file has the most changed lines?
+EOF
+      ;;
+    git_push) cat <<'EOF'
+Create a branch named 'practice/<anything>', commit a change, and push it
+with plain 'git push' (no --set-upstream).
+EOF
+      ;;
+    git_rebase) cat <<'EOF'
+Rebase 'feature/invoices' onto 'main' and resolve the conflict. In the
+conflicted file, the '|||||||' section shows the original code before
+either side changed it.
+EOF
+      ;;
+    git_branch_sort) cat <<'EOF'
+Run 'git branch'. Which branch had the most recent commit?
+(It's listed first.)
+EOF
+      ;;
+  esac
+}
+
+answer() {
+  cat "$STATE/answers/$1"
+}
+
+normalize() {
+  local value=$1
+  value=${value#"$SANDBOX"/}
+  value=${value#./}
+  value=${value%/}
+  printf '%s' "$value" | tr -d '[:space:]'
+}
+
+ask() {
+  local reply
+  read -r -p "  $1 " reply
+  printf '%s' "$reply"
+}
+
+confirm() {
+  local reply
+  read -r -p "  Did you do it? [y/N] " reply
+  [[ $reply =~ ^[yY] ]]
+}
+
+check_exercise() {
+  case $1 in
+    history_*) confirm ;;
+    search_definition | search_type | navigate_delta | search_count | search_bat)
+      [[ $(normalize "$(ask "Answer:")") == "$(answer "$1")" ]]
+      ;;
+    git_branch_sort)
+      [[ $(normalize "$(ask "Answer:")") == "$(git -C "$SANDBOX" for-each-ref --sort=-committerdate --count=1 --format='%(refname:short)' refs/heads)" ]]
+      ;;
+    navigate_alt_c | navigate_star_tab | navigate_cdspell)
+      [[ $(normalize "$PWD") == "$(answer "$1")" ]]
+      ;;
+    git_push)
+      git --git-dir="$REMOTE" for-each-ref --format='%(refname)' refs/heads/practice/ | grep -q .
+      ;;
+    git_rebase)
+      local git_dir
+      git_dir=$(git -C "$SANDBOX" rev-parse --absolute-git-dir)
+      [[ ! -d $git_dir/rebase-merge && ! -d $git_dir/rebase-apply ]] &&
+        git -C "$SANDBOX" merge-base --is-ancestor main feature/invoices
+      ;;
+  esac
+}
+
+write_file() {
+  mkdir -p "$(dirname "$1")"
+  cat > "$1"
+}
+
+commit_at() {
+  local offset=$1 message=$2
+  git -C "$SANDBOX" add -A
+  GIT_AUTHOR_DATE="$(( $(date +%s) - offset )) +0000" GIT_COMMITTER_DATE="$(( $(date +%s) - offset )) +0000" \
+    git -C "$SANDBOX" -c user.name="Drill" -c user.email="drill@example.com" -c commit.verbose=false \
+    commit -q -m "$message"
+}
+
+build_sandbox() {
+  rm -rf "$SANDBOX" "$REMOTE" "$STATE/answers"
+  mkdir -p "$SANDBOX" "$STATE/answers"
+  git init -q -b main "$SANDBOX"
+  git init -q --bare -b main "$REMOTE"
+  git -C "$SANDBOX" remote add origin "$REMOTE"
+
+  local model
+  for model in invoice customer payment refund subscription plan coupon tax_rate; do
+    write_file "$SANDBOX/app/models/$model.rb" <<EOF
+class ${model^}
+  # TODO: validate ${model} attributes
+  def to_h
+    {}
+  end
+end
+EOF
+    write_file "$SANDBOX/spec/models/${model}_spec.rb" <<EOF
+RSpec.describe ${model^} do
+  it "serializes" do
+    expect(described_class.new.to_h).to eq({})
+  end
+end
+EOF
+  done
+  for model in payment subscription; do
+    echo '# covers refund edge cases' >> "$SANDBOX/spec/models/${model}_spec.rb"
+  done
+  echo '# refund totals' >> "$SANDBOX/spec/models/refund_spec.rb"
+
+  write_file "$SANDBOX/app/services/billing/tax_calculator.rb" <<'EOF'
+module Billing
+  class TaxCalculator
+    def calculate_tax(amount, rate)
+      amount * rate
+    end
+
+    def legacy_rate
+      0.05
+    end
+  end
+end
+EOF
+  write_file "$SANDBOX/app/services/billing/invoice_builder.rb" <<'EOF'
+module Billing
+  class InvoiceBuilder
+    def build(customer)
+      { customer: customer, total: 0 }
+    end
+  end
+end
+EOF
+  write_file "$SANDBOX/app/services/billing/adapters/stripe_adapter.rb" <<'EOF'
+module Billing
+  class StripeAdapter; end
+end
+EOF
+  write_file "$SANDBOX/app/services/billing/adapters/paypal_adapter.rb" <<'EOF'
+module Billing
+  class PaypalAdapter; end
+end
+EOF
+  write_file "$SANDBOX/app/services/shipping/adapters/canada_post_adapter.rb" <<'EOF'
+module Shipping
+  class CanadaPostAdapter; end
+end
+EOF
+
+  {
+    echo "class InvoiceMailer"
+    local i
+    for i in $(seq 1 $(( RANDOM % 20 + 5 ))); do
+      printf '  def notice_%s\n  end\n\n' "$i"
+    done
+    printf '  def deliver_late_notice\n  end\nend\n'
+  } | write_file "$SANDBOX/app/mailers/invoice_mailer.rb"
+
+  write_file "$SANDBOX/config/rates/default.yml" <<<'standard_rate: 0.13'
+  write_file "$SANDBOX/config/rates/legacy.yml" <<<'legacy_rate: 0.05'
+  write_file "$SANDBOX/config/rates/regions.yml" <<<'ontario: 0.13'
+  mkdir -p "$SANDBOX/spec/fixtures/files" "$SANDBOX/spec/fixtures/snapshots/invoices/2024/q4" "$SANDBOX/spec/fixtures/snapshots/receipts"
+  echo '{}' > "$SANDBOX/spec/fixtures/snapshots/invoices/2024/q4/annual.json"
+  echo '{}' > "$SANDBOX/spec/fixtures/snapshots/receipts/basic.json"
+  echo 'id,total' > "$SANDBOX/spec/fixtures/files/invoices.csv"
+
+  local module file
+  for module in $(seq 1 10); do
+    for file in $(seq 1 15); do
+      write_file "$SANDBOX/lib/generated/module_$module/file_$file.rb" <<<"# generated module $module file $file"
+    done
+  done
+  commit_at 86400 "Initial billing app"
+
+  sed -i '' 's/total: 0 }/total: 0, currency: "CAD" }/' "$SANDBOX/app/services/billing/invoice_builder.rb"
+  commit_at 7200 "Default invoices to CAD"
+
+  git -C "$SANDBOX" branch -q old/cleanup HEAD~1
+  git -C "$SANDBOX" switch -q -c feature/invoices HEAD~1
+  sed -i '' 's/total: 0 }/total: 0, due_in_days: 30 }/' "$SANDBOX/app/services/billing/invoice_builder.rb"
+  for i in $(seq 1 12); do
+    printf '\n  def reminder_%s\n  end\n' "$i" >> "$SANDBOX/app/mailers/invoice_mailer.rb"
+  done
+  echo '# net 30 terms' >> "$SANDBOX/app/models/invoice.rb"
+  commit_at 3600 "Add payment terms to invoices"
+
+  git -C "$SANDBOX" switch -q -c spike/pdf-export main
+  echo '# PDF export spike' >> "$SANDBOX/app/models/invoice.rb"
+  commit_at 60 "Spike PDF export"
+
+  git -C "$SANDBOX" switch -q main
+  git -C "$SANDBOX" push -q origin main feature/invoices
+
+  echo "app/services/billing/tax_calculator.rb" > "$STATE/answers/search_definition"
+  rg -l refund "$SANDBOX/spec" | wc -l | tr -d ' ' > "$STATE/answers/search_count"
+  rg -n 'def deliver_late_notice' "$SANDBOX/app/mailers/invoice_mailer.rb" | cut -d: -f1 > "$STATE/answers/search_bat"
+  echo "config/rates/legacy.yml" > "$STATE/answers/search_type"
+  echo "spec/fixtures/snapshots/invoices/2024/q4" > "$STATE/answers/navigate_alt_c"
+  echo "app/services/billing/adapters" > "$STATE/answers/navigate_star_tab"
+  echo "spec/fixtures" > "$STATE/answers/navigate_cdspell"
+  git -C "$SANDBOX" diff --numstat main feature/invoices | sort -k1,1nr | head -1 | cut -f3 > "$STATE/answers/navigate_delta"
+}
+
+current_day() {
+  cat "$STATE/day" 2>/dev/null || echo 0
+}
+
+pick_exercises() {
+  local day=$1 stage_index=$(( day / DAYS_PER_STAGE )) pool review=""
+  if (( stage_index >= ${#STAGES[@]} )); then
+    local all="" stage
+    for stage in "${STAGES[@]}"; do
+      pool="STAGE_EXERCISES_$stage"
+      all+=" ${!pool}"
+    done
+    printf '%s\n' $all | sort -R | head -3
+    return
+  fi
+
+  local stage=${STAGES[$stage_index]}
+  pool="STAGE_EXERCISES_$stage"
+  read -r -a exercises <<< "${!pool}"
+  local count=2
+  (( stage_index == 0 )) && count=3
+  local i
+  for (( i = 0; i < count && i < ${#exercises[@]}; i++ )); do
+    echo "${exercises[$(( (day + i) % ${#exercises[@]} ))]}"
+  done
+
+  if (( stage_index > 0 )); then
+    local earlier=""
+    for (( i = 0; i < stage_index; i++ )); do
+      pool="STAGE_EXERCISES_${STAGES[$i]}"
+      earlier+=" ${!pool}"
+    done
+    printf '%s\n' $earlier | sort -R | head -1
+  fi
+}
+
+stage_name() {
+  local stage_index=$(( $1 / DAYS_PER_STAGE ))
+  if (( stage_index >= ${#STAGES[@]} )); then
+    echo "review"
+  else
+    echo "${STAGES[$stage_index]}"
+  fi
+}
+
+show_today() {
+  local day=$1 stage n=1 id
+  stage=$(stage_name "$day")
+  echo "${BOLD}Drill day $(( day + 1 ))${RESET} ${DIM}(${stage})${RESET}"
+  echo "${DIM}Sandbox: $SANDBOX${RESET}"
+  echo
+  while read -r id; do
+    echo "${BOLD}$n.${RESET} $(exercise_text "$id" | sed '2,$s/^/   /')"
+    echo
+    n=$(( n + 1 ))
+  done < "$STATE/today"
+  if [[ $stage == review ]]; then
+    echo "${BOLD}Today's habit:${RESET} $(habit_for_stage "${STAGES[$(( RANDOM % ${#STAGES[@]} ))]}")"
+  else
+    echo "${BOLD}Today's habit:${RESET} $(habit_for_stage "$stage")"
+  fi
+  echo
+  echo "When you're done, run ${BOLD}drill check${RESET}. Exercises that ask you to"
+  echo "be in a folder must be checked one at a time from that folder."
+}
+
+start() {
+  mkdir -p "$STATE"
+  local day
+  day=$(current_day)
+  if [[ ! -s $STATE/today || ! -d $SANDBOX || $(cat "$STATE/today-day" 2>/dev/null) != "$day" ]]; then
+    build_sandbox
+    pick_exercises "$day" > "$STATE/today"
+    echo "$day" > "$STATE/today-day"
+    : > "$STATE/done"
+  fi
+  show_today "$day"
+}
+
+check() {
+  [[ -s $STATE/today ]] || { echo "No drill in progress. Run 'drill' first."; exit 1; }
+  local n=0 passed=0 total id
+  total=$(wc -l < "$STATE/today" | tr -d ' ')
+  while read -r id <&3; do
+    n=$(( n + 1 ))
+    if grep -qx "$id" "$STATE/done"; then
+      echo "${GREEN}✓${RESET} $n. already done"
+      passed=$(( passed + 1 ))
+      continue
+    fi
+    echo "${BOLD}$n.${RESET} $(exercise_text "$id" | head -1)…"
+    if check_exercise "$id"; then
+      echo "${GREEN}✓ done${RESET}"
+      echo "$id" >> "$STATE/done"
+      passed=$(( passed + 1 ))
+    else
+      echo "${RED}✗ not yet${RESET}"
+    fi
+  done 3< "$STATE/today"
+
+  echo
+  if (( passed == total )); then
+    echo "${GREEN}${BOLD}All $total done.${RESET} Run 'drill' next time for day $(( $(current_day) + 2 ))."
+    echo $(( $(current_day) + 1 )) > "$STATE/day"
+    rm -f "$STATE/today"
+  else
+    echo "$passed of $total done. Keep going, then run 'drill check' again."
+  fi
+}
+
+case ${1:-} in
+  "") start ;;
+  check) check ;;
+  reset) rm -f "$STATE/today"; start ;;
+  help | -h | --help)
+    cat <<'EOF'
+drill          show today's exercises (builds a fresh practice repo for a new day)
+drill check    check your answers and move to the next day when all are done
+drill reset    rebuild the practice repo and restart today's exercises
+EOF
+    ;;
+  *) echo "Unknown command: $1. Try 'drill help'."; exit 1 ;;
+esac

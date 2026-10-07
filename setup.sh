@@ -75,6 +75,13 @@ fi
 # Dotfiles
 ###############################################
 
+running "Removing symlinks to dotfiles that no longer exist"
+for link in "$HOME"/.[!.]* "$HOME"/.config/*; do
+  if [[ -L $link && ! -e $link && $(readlink "$link") == "$HOME/.dotfiles/"* ]]; then
+    rm "$link"
+  fi
+done;ok
+
 echo "Creating symlinks for dotfiles..."
 
 mkdir -p ~/.config

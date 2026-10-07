@@ -13,7 +13,9 @@ shopt -s nocaseglob;
 # Bash Completion
 if [ -f "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]; then
   . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+fi
 
+if [ -n "$BASH_COMPLETION_VERSINFO" ]; then
   # Add git completion to aliases
   __load_completion git
   __git_complete g __git_main

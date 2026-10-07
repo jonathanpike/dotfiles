@@ -27,7 +27,7 @@ if [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
   __git_complete gp _git_push
 fi
 
-ssh-add -A > /dev/null 2>&1
+ssh-add --apple-load-keychain > /dev/null 2>&1
 
 # Enable shims and autocompletion for rbenv
 eval "$(rbenv init -)"

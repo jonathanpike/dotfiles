@@ -34,8 +34,11 @@ fi
 
 packages=(
     bash-completion@2
+    bat
+    fd
     fzf
     git
+    git-delta
     rbenv
     ripgrep
     ruby-completion

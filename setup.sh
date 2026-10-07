@@ -65,20 +65,8 @@ pushd ~ > /dev/null 2>&1
 symlinkifne .bashrc
 symlinkifne .bash_profile
 symlinkifne .bash
-symlinkifne .vimrc
-symlinkifne .vim
 
 popd > /dev/null 2>&1
-
-###############################################
-# Vim Plugins
-###############################################
-
-echo "Installing Vim plugins..."
-
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-vim +PluginInstall +qall
-ok
 
 ###############################################
 # Package Install

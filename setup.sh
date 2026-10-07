@@ -84,7 +84,11 @@ done;ok
 
 echo "Creating symlinks for dotfiles..."
 
-mkdir -p ~/.config
+mkdir -p ~/.config/git ~/.ssh
+chmod 700 ~/.ssh
+if [[ -f ~/.ssh/config && ! -L ~/.ssh/config && ! -e ~/.ssh/config.local ]]; then
+  mv ~/.ssh/config ~/.ssh/config.local
+fi
 pushd ~ > /dev/null 2>&1
 
 symlinkifne .bashrc
@@ -92,6 +96,9 @@ symlinkifne .bash_profile
 symlinkifne .bash
 symlinkifne .gitconfig
 symlinkifne .config/ghostty
+symlinkifne .config/git/ignore
+symlinkifne .inputrc
+symlinkifne .ssh/config
 
 popd > /dev/null 2>&1
 

@@ -10,6 +10,9 @@ shopt -u nullglob
 # Case-insensitive globbing (used in pathname expansion)
 shopt -s nocaseglob;
 
+shopt -s cdspell checkwinsize
+shopt -s dirspell globstar 2> /dev/null
+
 # Bash Completion
 if [ -f "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]; then
   . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
@@ -28,8 +31,6 @@ if [ -n "$BASH_COMPLETION_VERSINFO" ]; then
   __git_complete gl _git_log
   __git_complete gp _git_push
 fi
-
-ssh-add --apple-load-keychain > /dev/null 2>&1
 
 command -v fzf > /dev/null && eval "$(fzf --bash)"
 

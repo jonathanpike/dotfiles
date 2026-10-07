@@ -15,7 +15,10 @@ Setup _should_ be idempotent, but I don't guarantee anything!
 ## What's included
 
 - `.bash_profile`, `.bashrc`, `.bash/` -- bash config: aliases, prompt, history, and Homebrew `PATH` setup
+- `.inputrc` -- readline settings: case-insensitive completion and prefix history search on the arrow keys
 - `.gitconfig` -- shared git config, using `delta` as the pager
+- `.config/git/ignore` -- global git ignore
+- `.ssh/config` -- shared SSH settings that store keys in the macOS Keychain
 - `.config/ghostty/config` -- Ghostty terminal config
 - `Brewfile` -- packages installed with `brew bundle`
 
@@ -24,6 +27,7 @@ Setup _should_ be idempotent, but I don't guarantee anything!
 These files are not tracked and stay on each machine:
 
 - `~/.gitconfig.local` -- git e-mail and other per-machine git settings (setup creates it)
+- `~/.ssh/config.local` -- per-host SSH keys (setup moves an existing `~/.ssh/config` here)
 - `~/.secrets` -- environment variables that shouldn't be committed
 
 ## Credits
